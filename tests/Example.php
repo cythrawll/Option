@@ -1,6 +1,6 @@
 <?php
 /**
- * CodeAngel Option class
+ * CodeAngel Options class
  *
  * LICENSE
  *
@@ -19,33 +19,41 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * @category Option
- * @copyright Copyright (c) 2013 Chad Minick
- * @version 1.0M1-SNAPSHOT
- * @license BSD
  */
-namespace org\codeangel\option;
+require_once 'bootstrap.php';
 
-/**
- * Represents an Option that has a value
- */
-class Some extends Option {
+use org\codeangel\option\Some;
+use org\codeangel\option\None;
 
-    private $obj;
-
-    /**
-     * @param mixed $obj the value for this Option.
-     */
-    public function __construct($obj) {
-        $this->obj = $obj;
+class StudentRegistry {
+    static function getStudent($name) {
+        $chance = rand(0,1);
+        if($chance === 1) {
+            return new None;
+        } else {
+            return new Some(new Student);
+        }
     }
-
-    public function isEmpty() {
-        return false;
-    }
-
-    public function get() {
-        return $this->obj;
-    }
-
 }
+
+class Student {
+    function getCourse($name) {
+        $chance = rand(0,1);
+        if($chance === 1) {
+            return new None;
+        } else {
+            return new Some(new Course);
+        }
+    }
+}
+
+class Course {
+    function getGrade() {
+        return new Some(70);
+    }
+}
+
+var_dump(StudentRegistry::getStudent('Chad')
+    ->map(function($student) { return $student->getCourse('Math'); })
+    ->map(function($course) { return $course->getGrade(); })
+    ->map(function($grade) {return new Some($grade > 60);})->getOrElse(false));

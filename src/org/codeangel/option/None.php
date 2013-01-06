@@ -4,7 +4,7 @@
  *
  * LICENSE
  *
- * Copyright (c) 2012, Chad Minick
+ * Copyright (c) 2013, Chad Minick
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -20,9 +20,9 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * @category Option
- * @package  option
- * @copyright Copyright (c) 2012 Chad Minick
+ * @copyright Copyright (c) 2013 Chad Minick
  * @version 1.0M1-SNAPSHOT
+ * @license BSD
  */
 namespace org\codeangel\option;
 

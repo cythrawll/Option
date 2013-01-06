@@ -4,7 +4,7 @@
  *
  * LICENSE
  *
- * Copyright (c) 2012, Chad Minick
+ * Copyright (c) 2013, Chad Minick
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -22,10 +22,93 @@
 require 'bootstrap.php';
 
 use org\codeangel\option\Option;
+use org\codeangel\option\Some;
+use org\codeangel\option\None;
 use org\codeangel\option\NoSuchElementException;
 
 class OptionTests extends PHPUnit_Framework_TestCase {
-    public function testGo() {
-        $this->assertTrue(true);
+    public function testSome() {
+        $var = 'hello';
+        $some = Option::create($var);
+        $this->assertEquals('hello', $some->get());
+        $this->assertEquals('hello', $some->getOrElse('hi'));
+        $this->assertEquals('hello', $some->getOrNull());
+        $this->assertTrue($some->isDefined());
+        $this->assertFalse($some->isEmpty());
+    }
+
+    /**
+     * @expectedException org\codeangel\option\NoSuchElementException
+     */
+    public function testNonExistingVariableEx() {
+        $none = Option::create($nonexistence);
+        $val= $none->get();
+    }
+
+    /**
+     * @expectedException org\codeangel\option\NoSuchElementException
+     */
+    public function testNullVariableEx() {
+        $nope = null;
+        $none = Option::create($nope);
+        $val = $none->get();
+    }
+
+    public function testNoneExisting() {
+        $none = Option::create($nonexisting);
+        $this->assertEquals('hi', $none->getOrElse('hi'));
+        $this->assertNull($none->getOrNull());
+        $this->assertFalse($none->isDefined());
+        $this->assertTrue($none->isEmpty());
+    }
+
+    public function testNull() {
+        $null = null;
+        $none = Option::create($null);
+        $this->assertEquals('hi', $none->getOrElse('hi'));
+        $this->assertNull($none->getOrNull());
+        $this->assertFalse($none->isDefined());
+        $this->assertTrue($none->isEmpty());
+    }
+
+    public function testMapBasicFunction() {
+        $some = new Some('hi');
+        $this->assertEquals('HI', $some->map('strtoupper'));
+    }
+
+    public function testMapBasicFunctionNone() {
+        $none = new None;
+        $this->assertInstanceOf('org\codeangel\option\None', $none->map('strtoupper'));
+    }
+
+    public function testMapCallback() {
+        $some = new Some('HELLO');
+        $this->assertEquals('hello', $some->map(array($this, 'someCallback')));
+    }
+
+    public function testMapCallbackNone() {
+        $none = new None;
+        $this->assertInstanceOf('org\codeangel\option\None', $none->map(array($this, 'someCallback')));
+    }
+
+    public function testMapClosure() {
+        $some = new Some('HELLO');
+        $this->assertEquals('hello', $some->map(function($arg) { return strtolower($arg);}));
+    }
+
+    public function testMapClosureNone() {
+        $none = new None;
+        $this->assertInstanceOf('org\codeangel\option\None', $none->map(array($this, 'someCallback')));
+    }
+
+    public function testBreakReference() {
+        $s = 'hi';
+        $some = Option::create($s);
+        $s = 'hello';
+        $this->assertEquals('hi', $some->get());
+    }
+
+    public function someCallback($what) {
+        return strtolower($what);
     }
 }
