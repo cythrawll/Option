@@ -108,6 +108,12 @@ class OptionTests extends PHPUnit_Framework_TestCase {
         $this->assertEquals('hi', $some->get());
     }
 
+    public function testInvalidCallback() {
+        $s = 'hi';
+        $some = Option::create($s);
+        $this->assertInstanceOf('org\codeangel\option\None', $some->map('flipittyfloppityfloop'));
+    }
+
     public function someCallback($what) {
         return strtolower($what);
     }

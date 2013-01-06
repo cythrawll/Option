@@ -35,7 +35,7 @@ abstract class Option {
      * Should not be used directly..  favor getOrElse or getOrNull
      *
      * @return mixed Returns value if Some, throws NoSuchElementException if None
-     * @throws org\codeangel\option\NoSuchElementException Throws if None.
+     * @throws NoSuchElementException Throws if None.
      */
     abstract public function get();
 
