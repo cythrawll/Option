@@ -27,6 +27,7 @@ use org\codeangel\option\None;
 
 class StudentRegistry {
     static function getStudent($name) {
+        //Sometimes returns something, sometimes does not.
         $chance = rand(0,1);
         if($chance === 1) {
             return new None;
@@ -38,6 +39,7 @@ class StudentRegistry {
 
 class Student {
     function getCourse($name) {
+        //Sometimes returns something, sometimes does not.
         $chance = rand(0,1);
         if($chance === 1) {
             return new None;
