@@ -31,19 +31,36 @@ namespace org\codeangel\option;
  */
 class Some extends Option {
 
+    /**
+     * Value for this Option
+     *
+     * @var mixed value for this Option
+     */
     private $obj;
 
     /**
+     * Makes a Some object from value given
+     *
      * @param mixed $obj the value for this Option.
      */
     public function __construct($obj) {
         $this->obj = $obj;
     }
 
+    /**
+     * Always returns false
+     *
+     * @return bool returns false
+     */
     public function isEmpty() {
         return false;
     }
 
+    /**
+     * Returns value for this Option
+     *
+     * @return mixed Returns the value for this option
+     */
     public function get() {
         return $this->obj;
     }

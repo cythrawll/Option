@@ -26,11 +26,25 @@
  */
 namespace org\codeangel\option;
 
+/**
+ * Represents an empty Option
+ */
 class None extends Option {
+
+    /**
+     * Always returns true
+     *
+     * @return bool Returns if this Option is empty or not
+     */
     public function isEmpty() {
         return true;
     }
 
+    /**
+     * Always throws NoSuchElementException
+     *
+     * @throws NoSuchElementException always throws exception
+     */
     public function get() {
         throw new NoSuchElementException("Cannot get from a None");
     }
