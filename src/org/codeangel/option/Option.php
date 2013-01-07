@@ -114,4 +114,110 @@ abstract class Option {
             return new None;
         }
     }
+
+    /**
+     * Gets keys from an array and returns the result as an Option
+     *
+     * @param array $array array to get values from
+     * @param mixed $key,... Unlimited keys to fetch off of the array
+     * @returns None|Some
+     */
+    static public function createArray(&$array,$key) {
+        if(!is_array($array)) {
+            return self::create($array);
+        }
+        if(array_key_exists($key, $array)) {
+            $keys = func_get_args();
+            array_shift($keys);
+            array_shift($keys);
+            if(count($keys) > 0) {
+                //because the first argument needs to be passed by ref
+                $args = self::createArgsList($array[$key], $keys);
+                return call_user_func_array(array('self', 'createArray'), $args);
+            } else {
+                return self::create($array[$key]);
+            }
+        }
+        return new None;
+    }
+
+    /**
+     * fetches Option from $_GET supervariable
+     *
+     * @param mixed $var,... keys that will be applied to $_GET
+     * @return Some|None returns Option for $_GET supervariable
+     */
+    public static function _get($var) {
+        $fargs = func_get_args();
+        return call_user_func_array(array('self', 'createArray'), self::createArgsList($_GET, $fargs));
+    }
+
+    /**
+     * fetches Option from $_POST supervariable
+     *
+     * @param mixed $var,... keys that will be applied to $_POST
+     * @return Some|None returns Option for $_POST supervariable
+     */
+    public static function _post($var) {
+        $fargs = func_get_args();
+        return call_user_func_array(array('self', 'createArray'), self::createArgsList($_POST, $fargs));
+    }
+
+    /**
+     * fetches Option from $_SERVER supervariable
+     *
+     * @param mixed $var,... keys that will be applied to $_SERVER
+     * @return Some|None returns Option for $_SERVER supervariable
+     */
+    public static function _server($var) {
+        $fargs = func_get_args();
+        return call_user_func_array(array('self', 'createArray'), self::createArgsList($_SERVER, $fargs));
+    }
+
+    /**
+     * fetches Option from $_GET or $_POST supervariable
+     * $_GET is prefered if there is a conflict
+     *
+     * @param mixed $var,... keys that will be applied to $_GET or $_POST
+     * @return Some|None returns Option for $_GET or $_POST supervariable
+     */
+    public static function _request($var) {
+        $args = func_get_args();
+        $res = call_user_func_array(array('self', '_get'), $args);
+        if($res instanceof None) {
+            return call_user_func_array(array('self', '_post'), $args);
+        }
+        return $res;
+    }
+
+    /**
+     * fetches Option from $_GET or $_POST supervariable
+     * $_POST is prefered if there is a conflict
+     *
+     * @param mixed $var,... keys that will be applied to $_GET or $_POST
+     * @return Some|None returns Option for $_GET or $_POST supervariable
+     */
+    public static function _requestp($var) {
+        $args = func_get_args();
+        $res = call_user_func_array(array('self', '_post'), $args);
+        if($res instanceof None) {
+            return call_user_func_array(array('self', '_get'), $args);
+        }
+        return $res;
+    }
+
+    /**
+     * Creates an argument list with references first parameter
+     *
+     * @param mixed $array first thing that needs to be reference
+     * @param $fargs array of argumetns that is the rest
+     * @return array array that's appropriate for call_user_func_array
+     */
+    private static function createArgsList(&$array, $fargs) {
+        $args[0] = &$array;
+        foreach($fargs as $f) {
+            $args[] = $f;
+        }
+        return $args;
+    }
 }

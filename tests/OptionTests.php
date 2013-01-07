@@ -114,6 +114,108 @@ class OptionTests extends PHPUnit_Framework_TestCase {
         $this->assertInstanceOf('org\codeangel\option\None', $some->map('flipittyfloppityfloop'));
     }
 
+    public function testArrayCreate() {
+        $s['hello'][0] = 'hi';
+        $some = Option::createArray($s, 'hello', 0);
+        $this->assertEquals('hi', $some->get());
+
+        $some = Option::createArray($s, 'hello');
+        $this->assertEquals(array('hi'), $some->get());
+
+        $none = Option::createArray($s, 'hello', 1);
+        $this->assertInstanceOf('org\codeangel\option\None', $none);
+
+        $none = Option::createArray($t, 'hello', 2);
+        $this->assertInstanceOf('org\codeangel\option\None', $none);
+    }
+
+    public function testSuperGet() {
+        $_GET['foo'] = "hello";
+        $_GET['bar'][0] = "world";
+        $some = Option::_get('foo');
+        $this->assertEquals('hello', $some->get());
+        $some = Option::_get('bar', 0);
+        $this->assertEquals('world', $some->get());
+
+        $none = Option::_get('non');
+        $this->assertInstanceOf('org\codeangel\option\None', $none);
+
+        $none = Option::_get('bar', 1);
+        $this->assertInstanceOf('org\codeangel\option\None', $none);
+        $_GET = array();
+    }
+
+    public function testSuperPost() {
+        $_POST['foo'] = "hello";
+        $_POST['bar'][0] = "world";
+
+        $some = Option::_post('foo');
+        $this->assertEquals('hello', $some->get());
+        $some = Option::_post('bar', 0);
+        $this->assertEquals('world', $some->get());
+
+        $none = Option::_post('non');
+        $this->assertInstanceOf('org\codeangel\option\None', $none);
+
+        $none = Option::_post('bar', 1);
+        $this->assertInstanceOf('org\codeangel\option\None', $none);
+
+        $_POST = array();
+    }
+
+    public function testSuperServer() {
+        $_SERVER['foo'] = "hello";
+        $_SERVER['bar'][0] = "world";
+
+        $some = Option::_server('foo');
+        $this->assertEquals('hello', $some->get());
+        $some = Option::_server('bar', 0);
+        $this->assertEquals('world', $some->get());
+
+        $none = Option::_server('non');
+        $this->assertInstanceOf('org\codeangel\option\None', $none);
+
+        $none = Option::_server('bar', 1);
+        $this->assertInstanceOf('org\codeangel\option\None', $none);
+
+        unset($_SERVER['foo']);
+        unset($_SERVER['bar']);
+    }
+
+    public function testRequest() {
+        $_GET['foo'] = "hello";
+        $_GET['bar'][0] = "world";
+        $_GET['banana'] = 'bam';
+        $_POST['foo'] = "hellop";
+        $_POST['bar'][0] = "worldp";
+        $_POST['bar'][1] = 'wassup';
+
+        $some = Option::_request('foo');
+        $this->assertEquals('hello', $some->get());
+        $some = Option::_request('bar', 0);
+        $this->assertEquals('world', $some->get());
+
+        $some = Option::_request('bar', 1);
+        $this->assertEquals("wassup", $some->get());
+
+        $some = Option::_requestp('foo');
+        $this->assertEquals('hellop', $some->get());
+        $some = Option::_requestp('bar', 0);
+        $this->assertEquals('worldp', $some->get());
+
+        $some = Option::_requestp('banana');
+        $this->assertEquals('bam', $some->get());
+
+        $none = Option::_request('non');
+        $this->assertInstanceOf('org\codeangel\option\None', $none);
+
+        $none = Option::_requestp('non');
+        $this->assertInstanceOf('org\codeangel\option\None', $none);
+
+        $_GET = array();
+        $_POST = array();
+    }
+
     public function someCallback($what) {
         return strtolower($what);
     }
