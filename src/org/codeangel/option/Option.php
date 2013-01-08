@@ -220,4 +220,21 @@ abstract class Option {
         }
         return $args;
     }
+
+    public function hasLength() {
+        if($this->isEmpty()) {
+            return false;
+        }
+
+        $val = $this->get();
+        if(is_array($val) && count($val) === 0) {
+            return false;
+        }
+
+        if($val === '') {
+            return false;
+        }
+
+        return true;
+    }
 }

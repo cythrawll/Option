@@ -48,4 +48,13 @@ class None extends Option {
     public function get() {
         throw new NoSuchElementException("Cannot get from a None");
     }
+
+    /**
+     * Returns empty string
+     *
+     * @return string string representation of this object
+     */
+    public function __toString() {
+        return "";
+    }
 }

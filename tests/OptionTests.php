@@ -216,6 +216,37 @@ class OptionTests extends PHPUnit_Framework_TestCase {
         $_POST = array();
     }
 
+    public function testEcho() {
+        $none = new None;
+        echo $none;
+        $some = new Some("");
+        echo $some;
+    }
+
+    public function testHasLength() {
+        $emptyArray = new Some(array());
+        $fullArray = new Some(array(1,2,3));
+        $string = new Some("hi");
+        $emptyString = new Some("");
+        $zero = new Some(0);
+        $zeroString = new Some('0');
+        $object = new Some(new None);
+        $true = new Some(true);
+        $false = new Some(false);
+        $none = new None;
+
+        $this->assertFalse($emptyArray->hasLength());
+        $this->assertTrue($fullArray->hasLength());
+        $this->assertTrue($string->hasLength());
+        $this->assertFalse($emptyString->hasLength());
+        $this->assertTrue($zero->hasLength());
+        $this->assertTrue($zeroString->hasLength());
+        $this->assertTrue($object->hasLength());
+        $this->assertTrue($true->hasLength());
+        $this->assertTrue($false->hasLength());
+        $this->assertFalse($none->hasLength());
+    }
+
     public function someCallback($what) {
         return strtolower($what);
     }

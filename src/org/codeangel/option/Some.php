@@ -65,4 +65,12 @@ class Some extends Option {
         return $this->obj;
     }
 
+    /**
+     * Returns string representation of this object
+     *
+     * @return string representation of this object
+     */
+    public function __toString() {
+       return (string)$this->obj;
+    }
 }
